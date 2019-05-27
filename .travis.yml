@@ -1,0 +1,169 @@
+---
+dist: xenial
+services:
+  - docker
+
+env:
+#-----------------------------------------------
+#
+# CentOS
+#
+#-----------------------------------------------
+  - distribution: centos
+    version: "7"
+    playbook: sonar-scanner-3.3.0.1492
+
+#--------------------------------
+#
+# Fedora
+#
+#--------------------------------
+  - distribution: fedora
+    version: "31"
+    playbook: sonar-scanner-3.3.0.1492
+  - distribution: fedora
+    version: "30"
+    playbook: sonar-scanner-3.3.0.1492
+  - distribution: fedora
+    version: "29"
+    playbook: sonar-scanner-3.3.0.1492
+  - distribution: fedora
+    version: "28"
+    playbook: sonar-scanner-3.3.0.1492
+  - distribution: fedora
+    version: "27"
+    playbook: sonar-scanner-3.3.0.1492
+  - distribution: fedora
+    version: "26"
+    playbook: sonar-scanner-3.3.0.1492
+
+#--------------------------------
+#
+# Ubuntu
+#
+#--------------------------------
+  - distribution: ubuntu
+    version: "19.04"
+    playbook: sonar-scanner-3.3.0.1492
+  - distribution: ubuntu
+    version: "18.04"
+    playbook: sonar-scanner-3.3.0.1492
+  - distribution: ubuntu
+    version: "16.04"
+    playbook: sonar-scanner-3.3.0.1492
+  - distribution: ubuntu
+    version: "14.04"
+    playbook: sonar-scanner-3.3.0.1492
+
+#--------------------------------
+#
+# Debian
+#
+#--------------------------------
+  - distribution: debian
+    version: "10"
+    playbook: sonar-scanner-3.3.0.1492
+  - distribution: debian
+    version: "9"
+    playbook: sonar-scanner-3.3.0.1492
+  - distribution: debian
+    version: "8"
+    playbook: sonar-scanner-3.3.0.1492
+
+#--------------------------------
+#
+# Oraclelinux
+#
+#--------------------------------
+  - distribution: oraclelinux
+    version: "7"
+    playbook: sonar-scanner-3.3.0.1492
+
+#--------------------------------
+#
+# Amazonlinux
+#
+#--------------------------------
+  - distribution: amazonlinux
+    version: "2"
+    playbook: sonar-scanner-3.3.0.1492
+
+#--------------------------------
+#
+# Opensuse
+#
+#--------------------------------
+  - distribution: opensuse
+    version: "15.1"
+    playbook: sonar-scanner-3.3.0.1492
+  - distribution: opensuse
+    version: "15"
+    playbook: sonar-scanner-3.3.0.1492
+  - distribution: opensuse
+    version: "42.3"
+    playbook: sonar-scanner-3.3.0.1492
+  - distribution: opensuse
+    version: "42.2"
+    playbook: sonar-scanner-3.3.0.1492
+  - distribution: opensuse
+    version: "13.2"
+    playbook: sonar-scanner-3.3.0.1492
+
+#--------------------------------
+#
+# Archlinux
+#
+#--------------------------------
+  - distribution: archlinux
+    version: "rolling"
+    playbook: sonar-scanner-3.3.0.1492
+
+#--------------------------------
+#
+# Alpine
+#
+#--------------------------------
+  - distribution: alpine
+    version: "rolling"
+    playbook: sonar-scanner-3.3.0.1492
+
+#--------------------------------
+#
+# Gentoo
+#
+#--------------------------------
+  - distribution: gentoo
+    version: "stage3"
+    playbook: sonar-scanner-3.3.0.1492
+
+before_install:
+  # Pull docker container
+  - 'sudo docker pull diodonfrost/${distribution}-${version}-ansible:latest'
+
+script:
+  - container_id=$(mktemp)
+
+  # Run container and mount ansible role with it
+  - 'sudo docker run --detach --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro --volume="${PWD}":/etc/ansible/roles/ansible-role-sonar-scanner:ro diodonfrost/${distribution}-${version}-ansible:latest > "${container_id}"'
+
+  # Check syntax
+  - 'sudo docker exec "$(cat ${container_id})" env ANSIBLE_FORCE_COLOR=1 ansible-playbook -v /etc/ansible/roles/ansible-role-sonar-scanner/tests/playbooks/${playbook}.yml --syntax-check'
+
+  # Run ansible playbook
+  - 'sudo docker exec "$(cat ${container_id})" env ANSIBLE_FORCE_COLOR=1 ansible-playbook -v /etc/ansible/roles/ansible-role-sonar-scanner/tests/playbooks/${playbook}.yml'
+
+  # Test indempotence
+  - >
+    sudo docker exec "$(cat ${container_id})" env ANSIBLE_FORCE_COLOR=1 ansible-playbook -v /etc/ansible/roles/ansible-role-sonar-scanner/tests/playbooks/${playbook}.yml
+    | grep -q 'changed=0.*failed=0'
+    && (echo 'Idempotence test: pass' && exit 0)
+    || (echo 'Idempotence test: fail' && exit 1)
+
+  # Test role
+  - 'inspec exec tests/inspec -t docker://$(cat ${container_id})'
+
+  # Delete container
+  - 'sudo docker rm -f "$(cat ${container_id})"'
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/
