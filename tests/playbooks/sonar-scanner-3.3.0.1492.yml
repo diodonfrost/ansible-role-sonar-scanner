@@ -4,4 +4,4 @@
   roles:
     - role: ansible-role-sonar-scanner
       vars:
-        sonar_scanner_version: 3.3.0.14.92
+        sonar_scanner_version: 3.3.0.1492
