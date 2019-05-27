@@ -1,0 +1,37 @@
+# tasks file for install sonar-scanner on Linux system
+
+- name: Linux | Get the latest published full release for the repository
+  uri:
+    url: https://api.github.com/repos/sonarsource/sonar-scanner-cli/tags
+    return_content: yes
+  register: sonar_scanner_index
+  when: sonar_scanner_version == "latest"
+
+- name: Linux | Filter the latest sonar-scanner version
+  set_fact:
+    sonar_scanner_version: "{{ (sonar_scanner_index.json | first).name }}"
+  when: sonar_scanner_version == 'latest'
+
+  # This task avoids downloading sonar-scanner every time
+- name: Linux | Check if sonar-scanner is present with the right version
+  command: "{{ sonar_scanner_directory }}/bin/sonar-scanner --version"
+  register: sonar_scanner_installed_version
+  ignore_errors: yes
+  changed_when: false
+  failed_when: false
+
+- name: Linux | Install sonar-scanner
+  unarchive:
+    src: "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-{{ sonar_scanner_version }}-linux.zip"
+    dest: "{{ sonar_scanner_directory }}/"
+    remote_src: yes
+  when: sonar_scanner_version not in sonar_scanner_installed_version.stdout | default('')
+
+- name: Linux | Add sonar-scanner to PATH
+  file:
+    src: "{{ sonar_scanner_directory }}/sonar-scanner-{{ sonar_scanner_version }}-linux/bin/{{ item }}"
+    dest: "{{ sonar_scanner_path }}/{{ item }}"
+    state: link
+  with_items:
+    - sonar-scanner
+    - sonar-scanner-debug
