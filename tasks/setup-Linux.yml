@@ -1,3 +1,4 @@
+---
 # tasks file for install sonar-scanner on Linux system
 
 - name: Linux | Get the latest published full release for the repository
