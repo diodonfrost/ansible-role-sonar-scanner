@@ -1,7 +1,7 @@
 ---
 # defaults file for ansible-role-sonar-scanner
 
-# Define terragrunt version to install
+# Define sonar-scanner version to install
 # Possible values: https://api.github.com/repos/sonarsource/sonar-scanner-cli/tags
 # Default: latest
 sonar_scanner_version: latest
