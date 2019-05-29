@@ -1,0 +1,5 @@
+---
+- name: ansible-role-sonar-scanner
+  hosts: windows-machines
+  roles:
+    - ansible-role-sonar-scanner
