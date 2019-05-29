@@ -1,0 +1,5 @@
+---
+# vars file for sonar-scanner in Windows system
+
+# Define where install sonar-scanner
+sonar_scanner_path: "%PROGRAMFILES%"

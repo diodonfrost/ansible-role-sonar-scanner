@@ -1,7 +1,6 @@
 # Check if sonar-scanner is functionnal
 
 sonar_scanner_command = 'sonar-scanner --version'
-sonar_scanner_command = 'sonar-scanner.bat --version' if os.family == 'windows'
 
 control 'sonar-scanner-01' do
   impact 1.0

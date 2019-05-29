@@ -1,0 +1,47 @@
+---
+# tasks file for install sonar-scanner on Windows system
+
+- name: Windows | Get the latest published full release for the repository
+  win_uri:
+    url: https://api.github.com/repos/sonarsource/sonar-scanner-cli/tags
+    return_content: yes
+    headers:
+      user-agent: Mozilla/5.0
+  register: sonar_scanner_index
+  when: sonar_scanner_version == "latest"
+
+- name: Windows | Filter the latest sonar-scanner version
+  set_fact:
+    sonar_scanner_version: "{{ (sonar_scanner_index.json | first).name }}"
+  when: sonar_scanner_version == 'latest'
+
+# This task avoids downloading sonar-scanner every time
+- name: Windows | Check if sonar-scanner is present on Windows with the right version
+  win_shell: sonar-scanner.bat --version
+  register: sonar_scanner_installed_version
+  ignore_errors: yes
+  changed_when: false
+  failed_when: false
+
+- name: Windows | Create sonar-scanner folder
+  win_file:
+    path: "{{ sonar_scanner_path }}"
+    state: directory
+
+- name: Windows | Download sonar-scanner
+  win_get_url:
+    url: "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-{{ sonar_scanner_version }}-windows.zip"
+    dest: '%TEMP%\sonar-scanner-cli-{{ sonar_scanner_version }}-windows.zip'
+  when: sonar_scanner_version not in sonar_scanner_installed_version.stdout
+
+- name: Windows | Install sonar-scanner
+  win_unzip:
+    src: '%TEMP%\sonar-scanner-cli-{{ sonar_scanner_version }}-windows.zip'
+    dest: '{{ sonar_scanner_path }}\'
+    creates: '{{ sonar_scanner_path }}\sonar-scanner-{{ sonar_scanner_version }}-windows\bin\sonar-scanner.bat'
+  when: sonar_scanner_version not in sonar_scanner_installed_version.stdout
+
+- name: Windows | Add sonar-scanner to PATH
+  win_path:
+    elements: '{{ sonar_scanner_path }}\sonar-scanner-{{ sonar_scanner_version }}-windows\bin'
+    state: present
