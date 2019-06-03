@@ -79,6 +79,7 @@ platforms:
     provisioner:
       name: ansible_playbook
       ansible_binary_path: /usr/local/bin/
+
   - name: macosx-10.10
     driver:
       box: jhcook/osx-yosemite-10.10

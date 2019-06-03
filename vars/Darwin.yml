@@ -1,0 +1,8 @@
+---
+# vars file for sonar-scanner in Darwin system
+
+# Define where install sonar-scanner
+sonar_scanner_directory: /opt
+
+# Define where sonar-scanner will be linked
+sonar_scanner_path: /usr/local/bin
