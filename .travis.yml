@@ -10,6 +10,9 @@ env:
 #
 #-----------------------------------------------
   - distribution: centos
+    version: "8"
+    playbook: sonar-scanner-3.3.0.1492
+  - distribution: centos
     version: "7"
     playbook: sonar-scanner-3.3.0.1492
 
