@@ -37,6 +37,26 @@ platforms:
       platform: centos
 
   # Fedora
+  - name: fedora-32
+    driver:
+      image: diodonfrost/fedora-32-ansible
+      platform: centos
+  - name: fedora-31
+    driver:
+      image: diodonfrost/fedora-31-ansible
+      platform: centos
+  - name: fedora-30
+    driver:
+      image: diodonfrost/fedora-30-ansible
+      platform: centos
+  - name: fedora-29
+    driver:
+      image: diodonfrost/fedora-29-ansible
+      platform: centos
+  - name: fedora-28
+    driver:
+      image: diodonfrost/fedora-28-ansible
+      platform: centos
   - name: fedora-27
     driver:
       image: diodonfrost/fedora-27-ansible
@@ -47,6 +67,10 @@ platforms:
       platform: centos
 
   # Ubuntu
+  - name: ubuntu-20.04
+    driver:
+      image: diodonfrost/ubuntu-20.04-ansible
+      platform: ubuntu
   - name: ubuntu-19.04
     driver:
       image: diodonfrost/ubuntu-19.04-ansible
@@ -61,10 +85,14 @@ platforms:
       platform: ubuntu
   - name: ubuntu-14.04
     driver:
-      image: diodonfrost/ubuntu-14.04-ansible
+      image: ubuntu:14.04
       platform: ubuntu
 
   # Debian
+  - name: debian-10
+    driver:
+      image: diodonfrost/debian-10-ansible
+      platform: debian
   - name: debian-9
     driver:
       image: diodonfrost/debian-9-ansible
@@ -72,10 +100,6 @@ platforms:
   - name: debian-8
     driver:
       image: diodonfrost/debian-8-ansible
-      platform: debian
-  - name: debian-7
-    driver:
-      image: diodonfrost/debian-7-ansible
       platform: debian
 
   # Oraclelinux
