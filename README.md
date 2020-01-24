@@ -1,6 +1,6 @@
 # ansible-role-sonar-scanner
 
-[![Build Status](https://travis-ci.org/diodonfrost/ansible-role-sonar-scanner.svg?branch=master)](https://travis-ci.org/diodonfrost/ansible-role-sonar-scanner)
+[![Build Status](https://travis-ci.com/diodonfrost/ansible-role-sonar-scanner.svg?branch=master)](https://travis-ci.com/diodonfrost/ansible-role-sonar-scanner)
 [![Ansible Galaxy](https://img.shields.io/badge/galaxy-diodonfrost.sonar_scanner-660198.svg)](https://galaxy.ansible.com/diodonfrost/sonar_scanner)
 
 This role provide a compliance for install sonar-scanner on your target host.
