@@ -2,7 +2,7 @@
 # vars file for sonar-scanner in Linux system
 
 # Define where install sonar-scanner
-sonar_scanner_directory: /opt
+sonar_scanner_default_directory: /opt
 
 # Define where sonar-scanner will be linked
-sonar_scanner_path: /usr/local/bin
+sonar_scanner_default_path: /usr/local/bin
