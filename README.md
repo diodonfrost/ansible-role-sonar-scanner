@@ -93,8 +93,14 @@ This role has multiple variables. The defaults for all these variables are the f
 # Default: latest
 sonar_scanner_version: latest
 
-# sonar-scanner destination path, default value depends on the operating system
-sonar_scanner_path: /usr/local/bin
+# Define directory  where to install Sonar Scanner client
+# Default on Linux/Unix: /opt
+sonar_scanner_directory: "{{ sonar_scanner_default_directory }}"
+
+# Define where to install Sonar Scanner client binary
+# Default on Linux/Unix: /usr/local/bin
+# Default on Windows: %PROGRAMFILES%
+sonar_scanner_path: "{{ sonar_scanner_default_path }}"
 ```
 
 ## Dependencies
