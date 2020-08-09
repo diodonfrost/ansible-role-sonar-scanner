@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include ansible-role-sonar-scanner"
+      include_role:
+        name: "ansible-role-sonar-scanner"
+      vars:
+        sonar_scanner_version: "3.3.0.1492"

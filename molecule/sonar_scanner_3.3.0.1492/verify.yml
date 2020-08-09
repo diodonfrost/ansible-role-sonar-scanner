@@ -1,0 +1,13 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Linux | Sonar-scanner should be functionnal
+      command: /usr/local/bin/sonar-scanner --version
+      register: command_result
+
+    - name: Verify commands outputs
+      assert:
+        that:
+          - command_result.rc == 0
+        success_msg: "All tests passed"
