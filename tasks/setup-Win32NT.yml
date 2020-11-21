@@ -12,8 +12,13 @@
 
 - name: Windows | Filter the latest sonar-scanner version
   set_fact:
-    sonar_scanner_version: "{{ (sonar_scanner_index.json | first).name }}"
+    sonar_scanner_version_to_install: "{{ (sonar_scanner_index.json | first).name }}"
   when: sonar_scanner_version == 'latest'
+
+- name: Windows | Use the specified sonar-scanner version when latest var is not define
+  set_fact:
+    sonar_scanner_version_to_install: "{{ sonar_scanner_version }}"
+  when: sonar_scanner_version != 'latest'
 
 # This task avoids downloading sonar-scanner every time
 - name: Windows | Check if sonar-scanner is present on Windows with the right version
@@ -30,18 +35,18 @@
 
 - name: Windows | Download sonar-scanner
   win_get_url:
-    url: "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-{{ sonar_scanner_version }}-windows.zip"
-    dest: '%TEMP%\sonar-scanner-cli-{{ sonar_scanner_version }}-windows.zip'
-  when: sonar_scanner_version not in sonar_scanner_installed_version.stdout
+    url: "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-{{ sonar_scanner_version_to_install }}-windows.zip"
+    dest: '%TEMP%\sonar-scanner-cli-{{ sonar_scanner_version_to_install }}-windows.zip'
+  when: sonar_scanner_version_to_install not in sonar_scanner_installed_version.stdout
 
 - name: Windows | Install sonar-scanner
   win_unzip:
-    src: '%TEMP%\sonar-scanner-cli-{{ sonar_scanner_version }}-windows.zip'
+    src: '%TEMP%\sonar-scanner-cli-{{ sonar_scanner_version_to_install }}-windows.zip'
     dest: '{{ sonar_scanner_path }}\'
-    creates: '{{ sonar_scanner_path }}\sonar-scanner-{{ sonar_scanner_version }}-windows\bin\sonar-scanner.bat'
-  when: sonar_scanner_version not in sonar_scanner_installed_version.stdout
+    creates: '{{ sonar_scanner_path }}\sonar-scanner-{{ sonar_scanner_version_to_install }}-windows\bin\sonar-scanner.bat'
+  when: sonar_scanner_version_to_install not in sonar_scanner_installed_version.stdout
 
 - name: Windows | Add sonar-scanner to PATH
   win_path:
-    elements: '{{ sonar_scanner_path }}\sonar-scanner-{{ sonar_scanner_version }}-windows\bin'
+    elements: '{{ sonar_scanner_path }}\sonar-scanner-{{ sonar_scanner_version_to_install }}-windows\bin'
     state: present
