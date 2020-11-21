@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    name: ${{ matrix.image }} ${{ matrix.playbook }}
+    name: ${{ matrix.image }} sonar ${{ matrix.sonar_scanner_version }}
     runs-on: ubuntu-18.04
     strategy:
       fail-fast: false
@@ -38,8 +38,9 @@ jobs:
           - ansible-opensuse:42.2
           - ansible-archlinux:latest
           - ansible-gentoo:latest
-        scenario:
-          - sonar_scanner_3.3.0.1492
+        sonar_scanner_version:
+          - latest
+          - 3.3.0.1492
 
     steps:
       - name: Checkout repository
@@ -56,5 +57,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Test Ansible role
-        run: |
-          image=${{ matrix.image }} molecule test -s ${{ matrix.scenario }}
+        run: molecule test
+        env:
+          image: ${{ matrix.image }}
+          sonar_scanner_version: ${{ matrix.sonar_scanner_version }}
