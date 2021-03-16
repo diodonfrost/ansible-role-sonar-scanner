@@ -1,5 +1,5 @@
 galaxy_info:
-  role_name: sonar-scanner
+  role_name: sonar_scanner
   author: diodonfrost
   company: diodonfrost
   description: Ansible role - sonar-scanner
