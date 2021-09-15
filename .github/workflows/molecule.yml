@@ -68,6 +68,6 @@ jobs:
 
       - name: Test Ansible role with check_mode enable
         run: molecule check
-        env: 
+        env:
           image: ansible-${{ matrix.image }}
           sonar_scanner_version: ${{ matrix.sonar_scanner_version }}
