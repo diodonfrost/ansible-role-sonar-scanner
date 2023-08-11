@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: "Include ansible-role-sonar-scanner"
+      include_role:
+        name: "ansible-role-sonar-scanner"
+      vars:
+        sonar_scanner_version: "{{ lookup('env', 'sonar_scanner_version') | default('latest', true) }}"
